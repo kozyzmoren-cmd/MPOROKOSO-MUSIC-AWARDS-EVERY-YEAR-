@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -119,26 +118,6 @@ h2 {
   margin-bottom: 10px;
 }
 
-input, select, textarea {
-  width: 100%;
-  padding: 13px;
-  margin: 8px 0;
-  border: 1px solid #555;
-  border-radius: 5px;
-  background: #222;
-  color: white;
-}
-
-button {
-  background: gold;
-  color: black;
-  padding: 13px 25px;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
 .note {
   color: #ccc;
   font-size: 13px;
@@ -173,116 +152,87 @@ footer a {
 </header>
 
 <nav>
-  <a href="#home">Home</a>
-  <a href="#about">About</a>
-  <a href="#register">Artists</a>
-  <a href="#categories">Categories</a>
-  <a href="#voting">Voting</a>
-  <a href="#archives">Archives</a>
-  <a href="#contact">Contact</a>
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="artists.html">Artist Registration</a>
+  <a href="categories.html">Award Categories</a>
+  <a href="voting.html">Voting</a>
+  <a href="archives.html">Archives</a>
+  <a href="contact.html">Contact Us</a>
 </nav>
 
-<div class="hero" id="home">
+<div class="hero">
   <h1>MPOROKOSO MUSIC AWARDS</h1>
   <p>Recognising, celebrating and promoting musical talent across Zambia.</p>
+
   <div class="year" id="edition">2027 EDITION</div>
-  <a href="#register" class="btn">ARTIST REGISTRATION</a>
-  <a href="#about" class="btn">LEARN MORE</a>
+
+  <a href="artists.html" class="btn">ARTIST REGISTRATION</a>
+  <a href="about.html" class="btn">LEARN MORE</a>
 </div>
 
-<section id="about">
-  <h2>ABOUT THE AWARDS</h2>
+<section>
+  <h2>WELCOME TO THE AWARDS</h2>
+
   <div class="card">
-    <h3>Our Mission</h3>
+    <h3>Celebrating Zambian Talent</h3>
     <p>
-      MPOROKOSO MUSIC AWARDS is an annual celebration
-      dedicated to recognising talented musicians,
-      supporting creativity and promoting the Zambian
-      music industry.
+      MPOROKOSO MUSIC AWARDS recognises and celebrates
+      musicians and musical creativity from all ten
+      provinces of Zambia.
     </p>
   </div>
 
   <div class="card">
-    <h3>Founder</h3>
-    <p class="gold">BOSS ONE MUMBA</p>
+    <h3>Explore Our Awards</h3>
+    <p>Discover award categories, register as an artist,
+    learn about voting and explore previous editions.</p>
+    <a href="categories.html" class="btn">VIEW CATEGORIES</a>
+  </div>
+</section>
+
+<section>
+  <h2>OUR AWARDS</h2>
+
+  <div class="card">
+    <h3>Artist Registration</h3>
+    <p>Artists will be able to register for consideration.</p>
+    <a href="artists.html" class="btn">REGISTER HERE</a>
+  </div>
+
+  <div class="card">
+    <h3>Public Voting</h3>
+    <p>Support your favourite artists when voting officially opens.</p>
+    <a href="voting.html" class="btn">VOTING INFORMATION</a>
+  </div>
+
+  <div class="card">
+    <h3>Annual Archives</h3>
+    <p>Explore award editions and official winners.</p>
+    <a href="archives.html" class="btn">VIEW ARCHIVES</a>
+  </div>
+</section>
+
+<section>
+  <h2>FOUNDER</h2>
+  <div class="card">
+    <h3 class="gold">BOSS ONE MUMBA</h3>
     <p>Founder of MPOROKOSO MUSIC AWARDS.</p>
   </div>
-
-  <div class="card">
-    <h3>Our Coverage</h3>
-    <p>All 10 provinces of Zambia.</p>
-  </div>
 </section>
 
-<section id="register">
-  <h2>ARTIST REGISTRATION</h2>
-  <div class="card">
-    <h3>Join MPOROKOSO MUSIC AWARDS</h3>
-    <p>Registration details will be announced here.</p>
-
-    <p class="note">
-      The online registration system will be activated
-      after the official database connection is completed.
-      No registration is submitted through this preview.
-    </p>
-  </div>
-</section>
-
-<section id="categories">
-  <h2>AWARD CATEGORIES</h2>
-
-  <div class="card">
-    <h3>Music Awards</h3>
-    <p>Best Male Artist</p>
-    <p>Best Female Artist</p>
-    <p>Best New Artist</p>
-    <p>Best Gospel Artist</p>
-    <p>Best Hip Hop Artist</p>
-    <p>Best Afrobeat Artist</p>
-    <p>Best Song of the Year</p>
-    <p>Best Album of the Year</p>
-    <p>Best Music Video</p>
-    <p>Best Collaboration</p>
-  </div>
-  <p class="note">Final categories will be confirmed by the awards administration.</p>
-</section>
-
-<section id="voting">
-  <h2>PUBLIC VOTING</h2>
-  <div class="card">
-    <h3>Support Your Favourite Artist</h3>
-    <p>Public voting will be available when officially opened.</p>
-    <p class="gold">One verified person = One vote per category.</p>
-    <p class="note">
-      Voter accounts, verification and secure voting
-      will be connected before voting begins.
-    </p>
-  </div>
-</section>
-
-<section id="archives">
-  <h2>ANNUAL AWARDS ARCHIVES</h2>
-  <div class="card">
-    <h3>MPOROKOSO MUSIC AWARDS</h3>
-    <p id="archiveYears">2027 Edition</p>
-    <p class="note">
-      Previous editions, nominees and winners
-      will be displayed here as official records are added.
-    </p>
-  </div>
-</section>
-
-<section id="contact">
+<section>
   <h2>CONTACT US</h2>
   <div class="card">
-    <h3>Get In Touch</h3>
-    <p>Phone: <a class="gold" href="tel:0975952539">0975952539</a></p>
+    <p>Phone:
+      <a class="gold" href="tel:0975952539">0975952539</a>
+    </p>
     <p>Email:
       <a class="gold" href="mailto:kozyzmoren@gmail.com">
         kozyzmoren@gmail.com
       </a>
     </p>
-    <p class="note">For artist registration and general enquiries.</p>
+    <a href="contact.html" class="btn">CONTACT PAGE</a>
   </div>
 </section>
 
@@ -304,17 +254,7 @@ document.getElementById("edition").textContent =
 
 document.getElementById("copyright").textContent =
   currentYear;
-
-const archive = document.getElementById("archiveYears");
-archive.textContent = "";
-
-for (let year = firstEdition; year <= editionYear; year++) {
-  const item = document.createElement("p");
-  item.textContent = year + " Edition";
-  archive.appendChild(item);
-}
 </script>
 
 </body>
-  </html>
-    
+</html>
