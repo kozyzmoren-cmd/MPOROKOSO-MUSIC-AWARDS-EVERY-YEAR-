@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MPOROKOSO MUSIC AWARDS</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #080808;
+  color: white;
+  line-height: 1.6;
+}
+
+header {
+  background: #111;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 2px solid gold;
+}
+
+.logo {
+  color: gold;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+header p {
+  color: #ccc;
+  font-size: 13px;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 15px 8px;
+  background: #191919;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+nav a:hover {
+  color: gold;
+}
+
+.hero {
+  text-align: center;
+  padding: 75px 20px;
+  background: linear-gradient(135deg,#171000,#080808,#252000);
+}
+
+.hero h1 {
+  color: gold;
+  font-size: 35px;
+  margin-bottom: 15px;
+}
+
+.hero p {
+  color: #ddd;
+  max-width: 600px;
+  margin: auto;
+}
+
+.year {
+  color: gold;
+  font-size: 28px;
+  margin: 15px;
+  font-weight: bold;
+}
+
+.btn {
+  display: inline-block;
+  margin: 12px 5px;
+  padding: 12px 22px;
+  background: gold;
+  color: black;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+section {
+  padding: 45px 20px;
+  text-align: center;
+  max-width: 1000px;
+  margin: auto;
+}
+
+h2 {
+  color: gold;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #171717;
+  padding: 22px;
+  margin: 12px auto;
+  border: 1px solid #494000;
+  border-radius: 9px;
+  max-width: 650px;
+}
+
+.card h3 {
+  color: gold;
+  margin-bottom: 10px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 13px;
+  margin: 8px 0;
+  border: 1px solid #555;
+  border-radius: 5px;
+  background: #222;
+  color: white;
+}
+
+button {
+  background: gold;
+  color: black;
+  padding: 13px 25px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.note {
+  color: #ccc;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+footer {
+  background: #151515;
+  border-top: 2px solid gold;
+  padding: 30px 15px;
+  text-align: center;
+  color: #ccc;
+}
+
+footer a {
+  color: gold;
+  text-decoration: none;
+}
+
+.gold {
+  color: gold;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">MPOROKOSO MUSIC AWARDS</div>
+  <p>Celebrating Zambian Music Excellence</p>
+</header>
+
+<nav>
+  <a href="#home">Home</a>
+  <a href="#about">About</a>
+  <a href="#register">Artists</a>
+  <a href="#categories">Categories</a>
+  <a href="#voting">Voting</a>
+  <a href="#archives">Archives</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<div class="hero" id="home">
+  <h1>MPOROKOSO MUSIC AWARDS</h1>
+  <p>Recognising, celebrating and promoting musical talent across Zambia.</p>
+  <div class="year" id="edition">2027 EDITION</div>
+  <a href="#register" class="btn">ARTIST REGISTRATION</a>
+  <a href="#about" class="btn">LEARN MORE</a>
+</div>
+
+<section id="about">
+  <h2>ABOUT THE AWARDS</h2>
+  <div class="card">
+    <h3>Our Mission</h3>
+    <p>
+      MPOROKOSO MUSIC AWARDS is an annual celebration
+      dedicated to recognising talented musicians,
+      supporting creativity and promoting the Zambian
+      music industry.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Founder</h3>
+    <p class="gold">BOSS ONE MUMBA</p>
+    <p>Founder of MPOROKOSO MUSIC AWARDS.</p>
+  </div>
+
+  <div class="card">
+    <h3>Our Coverage</h3>
+    <p>All 10 provinces of Zambia.</p>
+  </div>
+</section>
+
+<section id="register">
+  <h2>ARTIST REGISTRATION</h2>
+  <div class="card">
+    <h3>Join MPOROKOSO MUSIC AWARDS</h3>
+    <p>Registration details will be announced here.</p>
+
+    <p class="note">
+      The online registration system will be activated
+      after the official database connection is completed.
+      No registration is submitted through this preview.
+    </p>
+  </div>
+</section>
+
+<section id="categories">
+  <h2>AWARD CATEGORIES</h2>
+
+  <div class="card">
+    <h3>Music Awards</h3>
+    <p>Best Male Artist</p>
+    <p>Best Female Artist</p>
+    <p>Best New Artist</p>
+    <p>Best Gospel Artist</p>
+    <p>Best Hip Hop Artist</p>
+    <p>Best Afrobeat Artist</p>
+    <p>Best Song of the Year</p>
+    <p>Best Album of the Year</p>
+    <p>Best Music Video</p>
+    <p>Best Collaboration</p>
+  </div>
+  <p class="note">Final categories will be confirmed by the awards administration.</p>
+</section>
+
+<section id="voting">
+  <h2>PUBLIC VOTING</h2>
+  <div class="card">
+    <h3>Support Your Favourite Artist</h3>
+    <p>Public voting will be available when officially opened.</p>
+    <p class="gold">One verified person = One vote per category.</p>
+    <p class="note">
+      Voter accounts, verification and secure voting
+      will be connected before voting begins.
+    </p>
+  </div>
+</section>
+
+<section id="archives">
+  <h2>ANNUAL AWARDS ARCHIVES</h2>
+  <div class="card">
+    <h3>MPOROKOSO MUSIC AWARDS</h3>
+    <p id="archiveYears">2027 Edition</p>
+    <p class="note">
+      Previous editions, nominees and winners
+      will be displayed here as official records are added.
+    </p>
+  </div>
+</section>
+
+<section id="contact">
+  <h2>CONTACT US</h2>
+  <div class="card">
+    <h3>Get In Touch</h3>
+    <p>Phone: <a class="gold" href="tel:0975952539">0975952539</a></p>
+    <p>Email:
+      <a class="gold" href="mailto:kozyzmoren@gmail.com">
+        kozyzmoren@gmail.com
+      </a>
+    </p>
+    <p class="note">For artist registration and general enquiries.</p>
+  </div>
+</section>
+
+<footer>
+  <h3 class="gold">MPOROKOSO MUSIC AWARDS</h3>
+  <p>Founded by Boss One Mumba</p>
+  <p>Zambia 🇿🇲</p>
+  <p>Annual Celebration of Musical Excellence</p>
+  <p>© <span id="copyright"></span> MPOROKOSO MUSIC AWARDS</p>
+</footer>
+
+<script>
+const currentYear = new Date().getFullYear();
+const firstEdition = 2027;
+const editionYear = Math.max(currentYear, firstEdition);
+
+document.getElementById("edition").textContent =
+  editionYear + " EDITION";
+
+document.getElementById("copyright").textContent =
+  currentYear;
+
+const archive = document.getElementById("archiveYears");
+archive.textContent = "";
+
+for (let year = firstEdition; year <= editionYear; year++) {
+  const item = document.createElement("p");
+  item.textContent = year + " Edition";
+  archive.appendChild(item);
+}
+</script>
+
+</body>
+  </html>
+    
