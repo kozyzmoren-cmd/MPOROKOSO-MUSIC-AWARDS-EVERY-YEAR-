@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artist Registration | MPOROKOSO MUSIC AWARDS</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080808;color:white;font-family:Arial,sans-serif;line-height:1.6}
+header{text-align:center;background:#111;padding:22px;border-bottom:2px solid gold}
+header h2{color:gold;margin:0}
+nav{display:flex;justify-content:center;flex-wrap:wrap;gap:16px;background:#191919;padding:15px}
+nav a{color:white;text-decoration:none;font-size:14px}
+nav a:hover{color:gold}
+main{max-width:750px;margin:auto;padding:30px 18px}
+h1,h2{color:gold;text-align:center}
+.card{background:#171717;border:1px solid #594800;border-radius:9px;padding:22px;margin:18px 0}
+label{display:block;margin-top:13px;color:gold}
+input,select,textarea{width:100%;padding:13px;margin-top:6px;background:#222;color:white;border:1px solid #555;border-radius:5px}
+button{background:gold;color:black;border:0;padding:13px 22px;margin-top:18px;border-radius:5px;font-weight:bold}
+.note{color:#ccc;font-size:13px}
+footer{text-align:center;background:#151515;padding:25px;border-top:2px solid gold;color:#ccc}
+</style>
+</head>
+<body>
+
+<header>
+<h2>MPOROKOSO MUSIC AWARDS</h2>
+<p>Celebrating Zambian Music Excellence 🇿🇲</p>
+</header>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+<a href="artists.html">Artist Registration</a>
+<a href="categories.html">Award Categories</a>
+<a href="voting.html">Voting</a>
+<a href="archives.html">Archives</a>
+<a href="contact.html">Contact Us</a>
+</nav>
+
+<main>
+<h1>ARTIST REGISTRATION</h1>
+<p style="text-align:center">MPOROKOSO MUSIC AWARDS 2027</p>
+
+<div class="card">
+<h2>Register as an Artist</h2>
+
+<form id="artistForm">
+
+<label>Artist or Stage Name</label>
+<input type="text" placeholder="Enter artist name" required>
+
+<label>Full Name</label>
+<input type="text" placeholder="Enter full name" required>
+
+<label>Phone Number</label>
+<input type="tel" placeholder="Enter phone number" required>
+
+<label>Email Address</label>
+<input type="email" placeholder="Enter email address" required>
+
+<label>Province</label>
+<select required>
+<option value="">Select Province</option>
+<option>Central</option>
+<option>Copperbelt</option>
+<option>Eastern</option>
+<option>Luapula</option>
+<option>Lusaka</option>
+<option>Muchinga</option>
+<option>North-Western</option>
+<option>Northern</option>
+<option>Southern</option>
+<option>Western</option>
+</select>
+
+<label>Music Genre</label>
+<select required>
+<option value="">Select Genre</option>
+<option>Gospel</option>
+<option>Hip Hop</option>
+<option>Afrobeat</option>
+<option>R&B</option>
+<option>Dancehall</option>
+<option>Kalindula</option>
+<option>Other</option>
+</select>
+
+<label>Music or YouTube Link</label>
+<input type="url" placeholder="Paste your music link">
+
+<label>Tell Us About Yourself</label>
+<textarea rows="4" placeholder="Write a short artist biography"></textarea>
+
+<p class="note">
+This is a registration form preview. Do not submit real personal information yet. Database connection and secure submission will be added before registrations open.
+</p>
+
+<button type="button" onclick="alert('Registration is not active yet. Please wait for the official launch.')">Registration Coming Soon</button>
+
+</form>
+</div>
+</main>
+
+<footer>
+<h3 style="color:gold">MPOROKOSO MUSIC AWARDS</h3>
+<p>Founder: Boss One Mumba</p>
+<p>Phone: 0975952539</p>
+<p>Email: kozyzmoren@gmail.com</p>
+<p>© 2027 MPOROKOSO MUSIC AWARDS</p>
+</footer>
+
+</body>
+</html>
