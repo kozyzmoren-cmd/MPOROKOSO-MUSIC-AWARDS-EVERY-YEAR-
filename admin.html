@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MPOROKOSO MUSIC AWARDS ADMIN</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#080808;
+ color:white;
+ font-family:Arial,sans-serif;
+}
+header{
+ background:#111;
+ padding:22px;
+ border-bottom:2px solid #d4af37;
+}
+header h2{
+ color:#d4af37;
+ margin:0;
+}
+header p{color:#aaa;margin-bottom:0}
+nav{
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px;
+ padding:15px;
+ background:#151515;
+}
+nav button{
+ padding:12px 15px;
+ border:0;
+ background:#292929;
+ color:white;
+ border-radius:5px;
+ cursor:pointer;
+}
+nav button.active{
+ background:#d4af37;
+ color:black;
+}
+main{padding:20px}
+.page{display:none}
+.page.active{display:block}
+h2{color:#d4af37}
+.cards{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+ gap:15px;
+}
+.card,.panel{
+ background:#171717;
+ padding:20px;
+ border:1px solid #333;
+ border-radius:10px;
+}
+.card h3{color:#aaa;font-size:14px}
+.number{
+ color:#d4af37;
+ font-size:30px;
+ font-weight:bold;
+}
+.panel{margin-top:20px}
+input{
+ width:100%;
+ padding:13px;
+ margin:10px 0;
+ background:#222;
+ border:1px solid #555;
+ color:white;
+ border-radius:5px;
+}
+.action{
+ background:#d4af37;
+ color:black;
+ padding:12px 18px;
+ border:0;
+ border-radius:5px;
+ font-weight:bold;
+}
+footer{
+ text-align:center;
+ padding:25px;
+ color:#888;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>🏆 MPOROKOSO MUSIC AWARDS</h2>
+<p>ADMINISTRATION DASHBOARD | 2027</p>
+</header>
+
+<nav>
+<button class="active" onclick="openPage('dashboard',this)">Dashboard</button>
+<button onclick="openPage('artists',this)">Artists</button>
+<button onclick="openPage('nominations',this)">Nominations</button>
+<button onclick="openPage('voting',this)">Voting</button>
+<button onclick="openPage('categories',this)">Categories</button>
+<button onclick="openPage('settings',this)">Settings</button>
+</nav>
+
+<main>
+
+<section id="dashboard" class="page active">
+<h2>Dashboard Overview</h2>
+<p>Welcome to the official awards administration system.</p>
+
+<div class="cards">
+<div class="card">
+<h3>Registered Artists</h3>
+<div class="number">0</div>
+</div>
+
+<div class="card">
+<h3>Nominations</h3>
+<div class="number">0</div>
+</div>
+
+<div class="card">
+<h3>Total Votes</h3>
+<div class="number">0</div>
+</div>
+
+<div class="card">
+<h3>Categories</h3>
+<div class="number">0</div>
+</div>
+</div>
+
+<div class="panel">
+<h2>System Status</h2>
+<p>Admin dashboard created successfully.</p>
+<p>Database connection: Pending</p>
+</div>
+</section>
+
+<section id="artists" class="page">
+<h2>Artists Management</h2>
+<div class="panel">
+<h3>Registered Artists</h3>
+<input type="search" placeholder="Search artists">
+<p>Artist registrations will appear here.</p>
+</div>
+</section>
+
+<section id="nominations" class="page">
+<h2>Nominations Management</h2>
+<div class="panel">
+<p>Manage award nominations here.</p>
+</div>
+</section>
+
+<section id="voting" class="page">
+<h2>Voting Management</h2>
+<div class="panel">
+<p>Control the voting system here.</p>
+<button class="action">Open Voting</button>
+<button class="action">Close Voting</button>
+</div>
+</section>
+
+<section id="categories" class="page">
+<h2>Award Categories</h2>
+<div class="panel">
+<input type="text" placeholder="Enter category name">
+<button class="action">Add Category</button>
+</div>
+</section>
+
+<section id="settings" class="page">
+<h2>Administration Settings</h2>
+<div class="panel">
+<p>Founder: Boss One Mumba</p>
+<p>Administrator: kozyzmoren@gmail.com</p>
+<p>Phone: 0975952539</p>
+</div>
+</section>
+
+</main>
+
+<footer>
+MPOROKOSO MUSIC AWARDS 2027<br>
+All Rights Reserved.
+</footer>
+
+<script>
+function openPage(id,btn){
+ document.querySelectorAll('.page').forEach(p=>{
+  p.classList.remove('active');
+ });
+ document.querySelectorAll('nav button').forEach(b=>{
+  b.classList.remove('active');
+ });
+ document.getElementById(id).classList.add('active');
+ btn.classList.add('active');
+}
+</script>
+
+</body>
+  </html>
+  
