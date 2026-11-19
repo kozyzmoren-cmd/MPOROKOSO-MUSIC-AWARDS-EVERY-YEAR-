@@ -29,7 +29,6 @@ button:disabled{opacity:.5}
 .note{color:#ccc;font-size:13px}
 #message{margin-top:15px;padding:12px;border-radius:5px;text-align:center}
 footer{text-align:center;background:#151515;padding:25px;border-top:2px solid gold;color:#ccc}
-.gold{color:gold}
 </style>
 </head>
 
@@ -60,57 +59,45 @@ footer{text-align:center;background:#151515;padding:25px;border-top:2px solid go
 <form id="artistForm">
 
 <label>Artist or Stage Name *</label>
-<input name="artist_name" type="text" placeholder="Enter artist name" required>
+<input name="artist_name" required>
 
 <label>Full Name *</label>
-<input name="full_name" type="text" placeholder="Enter full name" required>
+<input name="full_name" required>
 
 <label>Phone Number *</label>
-<input name="phone" type="tel" placeholder="Enter phone number" required>
+<input name="phone" type="tel" required>
 
 <label>Email Address *</label>
-<input name="email" type="email" placeholder="Enter email address" required>
+<input name="email" type="email" required>
 
 <label>Province *</label>
 <select name="province" required>
 <option value="">Select Province</option>
-<option>Central</option>
-<option>Copperbelt</option>
-<option>Eastern</option>
-<option>Luapula</option>
-<option>Lusaka</option>
-<option>Muchinga</option>
-<option>North-Western</option>
-<option>Northern</option>
-<option>Southern</option>
-<option>Western</option>
+<option>Central</option><option>Copperbelt</option>
+<option>Eastern</option><option>Luapula</option>
+<option>Lusaka</option><option>Muchinga</option>
+<option>North-Western</option><option>Northern</option>
+<option>Southern</option><option>Western</option>
 </select>
 
 <label>Music Genre *</label>
 <select name="genre" required>
 <option value="">Select Genre</option>
-<option>Gospel</option>
-<option>Hip Hop</option>
-<option>Afrobeat</option>
-<option>R&B</option>
-<option>Dancehall</option>
-<option>Kalindula</option>
+<option>Gospel</option><option>Hip Hop</option>
+<option>Afrobeat</option><option>R&B</option>
+<option>Dancehall</option><option>Kalindula</option>
 <option>Other</option>
 </select>
 
 <label>Music or YouTube Link</label>
-<input name="music_link" type="url" placeholder="Paste your music link">
+<input name="music_link" type="url">
 
 <label>Tell Us About Yourself</label>
-<textarea name="bio" rows="4" placeholder="Write a short artist biography"></textarea>
+<textarea name="bio" rows="4"></textarea>
 
-<p class="note">
-Fields marked * are required. Your registration details
-will be submitted to MPOROKOSO MUSIC AWARDS.
-</p>
+<p class="note">Fields marked * are required.</p>
 
 <button type="submit" id="submitBtn">SUBMIT REGISTRATION</button>
-
 <div id="message" role="status" aria-live="polite"></div>
 
 </form>
@@ -129,7 +116,6 @@ will be submitted to MPOROKOSO MUSIC AWARDS.
 
 <script>
 const SUPABASE_URL = "https://qexskbpmkvglgavziagl.supabase.co";
-
 const SUPABASE_KEY = "sb_publishable_t79SjLFUSnEYETCeC7h14w_MENglbGA";
 
 const supabaseClient = window.supabase.createClient(
@@ -148,17 +134,17 @@ form.addEventListener("submit", async function(event) {
   submitBtn.textContent = "SUBMITTING...";
   message.textContent = "Please wait...";
 
-  const formData = new FormData(form);
+  const data = new FormData(form);
 
   const artist = {
-    artist_name: formData.get("artist_name").trim(),
-    full_name: formData.get("full_name").trim(),
-    phone: formData.get("phone").trim(),
-    email: formData.get("email").trim(),
-    province: formData.get("province"),
-    genre: formData.get("genre"),
-    music_link: formData.get("music_link").trim() || null,
-    bio: formData.get("bio").trim() || null
+    artist_name: data.get("artist_name").trim(),
+    full_name: data.get("full_name").trim(),
+    phone: data.get("phone").trim(),
+    email: data.get("email").trim(),
+    province: data.get("province"),
+    genre: data.get("genre"),
+    music_link: data.get("music_link").trim() || null,
+    bio: data.get("bio").trim() || null
   };
 
   try {
@@ -166,12 +152,10 @@ form.addEventListener("submit", async function(event) {
       .from("Artists _registration")
       .insert([artist]);
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
     message.textContent =
-      "SUCCESS! Your artist registration has been received. Thank you!";
+      "SUCCESS! Your registration has been received. Thank you!";
     message.style.background = "#174d25";
     message.style.color = "white";
 
@@ -181,7 +165,7 @@ form.addEventListener("submit", async function(event) {
     console.error("Registration error:", error);
 
     message.textContent =
-      "Registration failed. Please try again or contact the awards team.";
+      "Registration failed: " + (error.message || "Please try again.");
     message.style.background = "#681b1b";
     message.style.color = "white";
 
