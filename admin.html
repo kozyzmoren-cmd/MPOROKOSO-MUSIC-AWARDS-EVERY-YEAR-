@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>mporokoso music awards | admin</title>
+<title>MPOROKOSO MUSIC AWARDS | ADMIN</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -14,21 +14,15 @@ body{
  background:#080808;
  color:white;
  font-family:Arial,sans-serif;
+ padding:20px;
 }
-header{
- background:#b8860b;
- color:black;
- padding:22px;
- text-align:center;
-}
-.container{
- max-width:1100px;
- margin:25px auto;
- padding:15px;
-}
+.container{max-width:1100px;margin:auto}
+header{text-align:center;padding:20px}
+h1{color:gold}
 .card{
  background:#171717;
  padding:20px;
+ border:1px solid #333;
  border-radius:12px;
  margin-bottom:20px;
 }
@@ -36,9 +30,10 @@ input,button{
  width:100%;
  padding:13px;
  margin:8px 0;
- border:0;
- border-radius:6px;
+ border-radius:7px;
+ border:1px solid #444;
 }
+input{background:#222;color:white}
 button{
  background:gold;
  color:black;
@@ -47,263 +42,258 @@ button{
 }
 .logout{background:#b22222;color:white}
 .stats{
- display:flex;
- gap:12px;
- flex-wrap:wrap;
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+ gap:15px;
 }
 .stat{
- background:#252525;
+ background:#222;
  padding:20px;
  border-radius:10px;
- flex:1;
- min-width:130px;
+ text-align:center;
 }
 .stat h2{color:gold}
-.table-wrap{overflow-x:auto}
 table{
  width:100%;
  border-collapse:collapse;
- min-width:650px;
+ min-width:700px;
 }
 th,td{
- border:1px solid #444;
  padding:12px;
+ border:1px solid #444;
  text-align:left;
 }
-th{background:#b8860b;color:black}
-tr:nth-child(even){background:#222}
+th{background:#292929;color:gold}
+.table-wrap{overflow-x:auto}
 #dashboard{display:none}
 #message{color:gold}
 </style>
 </head>
 
 <body>
-
-<header>
-<h1>mporokoso music awards 2027</h1>
-<h3>administration dashboard</h3>
-</header>
-
 <div class="container">
 
+<header>
+<h1>MPOROKOSO MUSIC AWARDS</h1>
+<p>ADMINISTRATION DASHBOARD</p>
+</header>
+
+<!-- LOGIN -->
 <div class="card" id="login">
-<h2>administrator login</h2>
-<input type="email" id="email" placeholder="admin email">
-<input type="password" id="password" placeholder="password">
-<button onclick="login_admin()">login</button>
+<h2>Admin Login</h2>
+
+<input type="email" id="email"
+placeholder="Admin Email">
+
+<input type="password" id="password"
+placeholder="Password">
+
+<button onclick="loginAdmin()">LOGIN</button>
+
 <p id="message"></p>
 </div>
 
+<!-- DASHBOARD -->
 <div id="dashboard">
 
 <div class="card">
-<h2>welcome administrator</h2>
-<button class="logout" onclick="logout_admin()">log out</button>
+<h2>Welcome, Administrator</h2>
+<button class="logout" onclick="logoutAdmin()">LOGOUT</button>
 </div>
 
 <div class="stats">
 <div class="stat">
-<h3>total artists</h3>
+<h3>Total Registrations</h3>
 <h2 id="total">0</h2>
-</div>
-<div class="stat">
-<h3>provinces</h3>
-<h2 id="provinces">0</h2>
-</div>
-<div class="stat">
-<h3>genres</h3>
-<h2 id="genres">0</h2>
 </div>
 </div>
 
 <div class="card">
-<h2>registered artists</h2>
+<h2>Registered Artists</h2>
 
-<input id="search"
-placeholder="search artist, phone, email or province..."
-oninput="search_artists()">
+<input type="text" id="search"
+placeholder="Search artists..."
+oninput="displayArtists()">
+
+<button onclick="loadArtists()">REFRESH</button>
+
+<p id="status"></p>
 
 <div class="table-wrap">
 <table>
-<thead id="tableHead"></thead>
-<tbody id="artistRows"></tbody>
+<thead>
+<tr id="headings"></tr>
+</thead>
+<tbody id="artistList"></tbody>
 </table>
 </div>
-
-<p id="status"></p>
 </div>
 
 </div>
 </div>
 
 <script>
-const supabase_url =
-'https://qexskbpmkvglgavziagl.supabase.co';
 
-const supabase_key =
-'sb_publishable_t79SjLFUSnEYETCeC7h14w_MENglbGA';
+// SUPABASE CONNECTION
+const SUPABASE_URL = "https://qexskbpmkvglgavziagl.supabase.co";
 
-const admin_email = 'kozyzmoren@gmail.com';
+const SUPABASE_KEY = "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
 
-const db = window.supabase.createClient(
-supabase_url,
-supabase_key
+const supabaseClient = window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
 );
 
+const ADMIN_EMAIL = "kozyzmoren@gmail.com";
+
+// TABLE NAME
+const TABLE_NAME = "Artists _registration";
+
 let artists = [];
+let columns = [];
 
-async function login_admin(){
+// LOGIN
+async function loginAdmin(){
 
- const email = document.getElementById('email').value.trim();
- const password = document.getElementById('password').value;
- const msg = document.getElementById('message');
+const email = document.getElementById("email").value.trim();
+const password = document.getElementById("password").value;
 
- msg.textContent = 'logging in...';
+document.getElementById("message").innerText = "Please wait...";
 
- if(email.toLowerCase() !== admin_email.toLowerCase()){
- msg.textContent = 'this email is not authorized.';
- return;
- }
-
- const {data,error} = await db.auth.signInWithPassword({
- email: email,
- password: password
- });
-
- if(error){
- msg.textContent = error.message;
- return;
- }
-
- await show_dashboard();
+if(email.toLowerCase() !== ADMIN_EMAIL){
+document.getElementById("message").innerText =
+"Access denied. Admin only.";
+return;
 }
 
-async function show_dashboard(){
+const {data,error} = await supabaseClient.auth.signInWithPassword({
+email:email,
+password:password
+});
 
- const {data,error} = await db.auth.getUser();
-
- const user = data?.user;
-
- if(error || !user ||
- user.email?.toLowerCase() !== admin_email.toLowerCase()){
-
- await db.auth.signOut();
-
- document.getElementById('message').textContent =
- 'administrator access denied.';
-
- return;
- }
-
- document.getElementById('login').style.display='none';
- document.getElementById('dashboard').style.display='block';
-
- await load_artists();
+if(error){
+document.getElementById("message").innerText = error.message;
+return;
 }
 
-async function load_artists(){
-
- const status = document.getElementById('status');
- status.textContent = 'loading artists...';
-
- const {data,error} = await db
- .from('Artists _registration')
- .select('*');
-
- if(error){
- status.textContent = 'database error: '+error.message;
- return;
- }
-
- artists = data || [];
-
- document.getElementById('total').textContent =
- artists.length;
-
- document.getElementById('provinces').textContent =
- new Set(artists.map(a=>get_field(a,'province')).filter(Boolean)).size;
-
- document.getElementById('genres').textContent =
- new Set(artists.map(a=>get_field(a,'genre')).filter(Boolean)).size;
-
- render_artists(artists);
-
- status.textContent = 'artist records loaded successfully.';
+showDashboard();
 }
 
-function get_field(row,name){
- const key = Object.keys(row).find(
- k=>k.toLowerCase().replace(/[\s_-]/g,'') === name
- );
- return key ? row[key] : '';
+// SHOW DASHBOARD
+async function showDashboard(){
+
+document.getElementById("login").style.display="none";
+document.getElementById("dashboard").style.display="block";
+
+await loadArtists();
 }
 
-function render_artists(list){
+// LOAD ARTISTS
+async function loadArtists(){
 
- const head = document.getElementById('tableHead');
- const rows = document.getElementById('artistRows');
+document.getElementById("status").innerText="Loading registrations...";
 
- const columns = Object.keys(artists[0] || {});
+const {data,error} = await supabaseClient
+.from(TABLE_NAME)
+.select("*")
+.order("id",{ascending:false});
 
- head.innerHTML = '<tr>' +
- columns.map(c=>'<th>'+escape_html(c)+'</th>').join('') +
- '</tr>';
-
- if(!list.length){
- rows.innerHTML =
- '<tr><td colspan="20">no registered artists found</td></tr>';
- return;
- }
-
- rows.innerHTML = list.map(a=>
- '<tr>' + columns.map(c=>
- '<td>'+escape_html(a[c])+'</td>'
- ).join('') + '</tr>'
- ).join('');
+if(error){
+document.getElementById("status").innerText =
+"Database error: "+error.message;
+return;
 }
 
-function search_artists(){
+artists=data || [];
 
- const q = document.getElementById('search').value.toLowerCase();
+columns=artists.length ? Object.keys(artists[0]) : [];
 
- const filtered = artists.filter(a=>
- Object.values(a).some(v=>
- String(v ?? '').toLowerCase().includes(q)
- )
- );
+document.getElementById("total").innerText=artists.length;
 
- render_artists(filtered);
+displayArtists();
+
+document.getElementById("status").innerText =
+artists.length+" registrations found.";
 }
 
-function escape_html(value){
+// DISPLAY ARTISTS
+function displayArtists(){
 
- return String(value ?? '').replace(/[&<>"']/g,
- c=>({
- '&':'&amp;',
- '<':'&lt;',
- '>':'&gt;',
- '"':'&quot;',
- "'":'&#39;'
- }[c]));
-}
+const search=document.getElementById("search").value.toLowerCase();
 
-async function logout_admin(){
- await db.auth.signOut();
- location.reload();
-}
+const filtered=artists.filter(artist =>
+Object.values(artist).some(value =>
+String(value ?? "").toLowerCase().includes(search)
+)
+);
 
-db.auth.getSession().then(async ({data,error})=>{
+const headings=document.getElementById("headings");
+const list=document.getElementById("artistList");
 
- if(error) return;
+headings.innerHTML="";
+list.innerHTML="";
 
- if(data.session){
- await show_dashboard();
- }
+columns.forEach(column=>{
+const th=document.createElement("th");
+th.textContent=column.replaceAll("_"," ");
+headings.appendChild(th);
+});
+
+filtered.forEach(artist=>{
+
+const tr=document.createElement("tr");
+
+columns.forEach(column=>{
+
+const td=document.createElement("td");
+td.textContent=artist[column] ?? "";
+tr.appendChild(td);
 
 });
 
-</script>
+list.appendChild(tr);
 
+});
+
+if(filtered.length===0){
+list.innerHTML='<tr><td colspan="20">No artists found.</td></tr>';
+}
+}
+
+// LOGOUT
+async function logoutAdmin(){
+
+await supabaseClient.auth.signOut();
+
+artists=[];
+
+document.getElementById("dashboard").style.display="none";
+document.getElementById("login").style.display="block";
+
+document.getElementById("password").value="";
+document.getElementById("message").innerText="Logged out successfully.";
+
+}
+
+// CHECK EXISTING SESSION
+async function checkSession(){
+
+const {data} = await supabaseClient.auth.getSession();
+
+if(data.session){
+
+if(data.session.user.email.toLowerCase()===ADMIN_EMAIL.toLowerCase()){
+showDashboard();
+}else{
+await supabaseClient.auth.signOut();
+}
+}
+
+}
+
+checkSession();
+
+</script>
 </body>
 </html>
 
