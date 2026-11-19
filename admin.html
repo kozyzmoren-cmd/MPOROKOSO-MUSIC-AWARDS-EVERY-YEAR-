@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MPOROKOSO MUSIC AWARDS | Admin</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#080808;
+ color:white;
+ font-family:Arial,sans-serif;
+}
+header{
+ background:#b8860b;
+ color:black;
+ padding:22px;
+ text-align:center;
+}
+.container{
+ max-width:1100px;
+ margin:25px auto;
+ padding:15px;
+}
+.card{
+ background:#171717;
+ padding:20px;
+ border-radius:12px;
+ margin-bottom:20px;
+}
+input,button{
+ width:100%;
+ padding:13px;
+ margin:8px 0;
+ border:0;
+ border-radius:6px;
+}
+button{
+ background:gold;
+ color:black;
+ font-weight:bold;
+ cursor:pointer;
+}
+.logout{background:#b22222;color:white}
+.stats{
+ display:flex;
+ gap:12px;
+ flex-wrap:wrap;
+}
+.stat{
+ background:#252525;
+ padding:20px;
+ border-radius:10px;
+ flex:1;
+ min-width:130px;
+}
+.stat h2{color:gold}
+.table-wrap{overflow-x:auto}
+table{
+ width:100%;
+ border-collapse:collapse;
+ min-width:650px;
+}
+th,td{
+ border:1px solid #444;
+ padding:12px;
+ text-align:left;
+}
+th{background:#b8860b;color:black}
+tr:nth-child(even){background:#222}
+#dashboard{display:none}
+#message{color:gold}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>MPOROKOSO MUSIC AWARDS 2027</h1>
+<h3>ADMINISTRATION DASHBOARD</h3>
+</header>
+
+<div class="container">
+
+<div class="card" id="login">
+<h2>Administrator Login</h2>
+<input type="email" id="email" placeholder="Admin Email">
+<input type="password" id="password" placeholder="Password">
+<button onclick="loginAdmin()">LOGIN</button>
+<p id="message"></p>
+</div>
+
+<div id="dashboard">
+
+<div class="card">
+<h2>Welcome Administrator</h2>
+<button class="logout" onclick="logoutAdmin()">LOG OUT</button>
+</div>
+
+<div class="stats">
+<div class="stat">
+<h3>Total Artists</h3>
+<h2 id="total">0</h2>
+</div>
+<div class="stat">
+<h3>Provinces</h3>
+<h2 id="provinces">0</h2>
+</div>
+<div class="stat">
+<h3>Genres</h3>
+<h2 id="genres">0</h2>
+</div>
+</div>
+
+<div class="card">
+<h2>Registered Artists</h2>
+<input id="search"
+placeholder="Search artist, phone, email or province..."
+oninput="searchArtists()">
+
+<div class="table-wrap">
+<table>
+<thead id="tableHead"></thead>
+<tbody id="artistRows"></tbody>
+</table>
+</div>
+<p id="status"></p>
+</div>
+
+</div>
+</div>
+
+<script>
+const SUPABASE_URL =
+'https://qexskbpmkvglgavziagl.supabase.co';
+
+const SUPABASE_KEY =
+'sb_publishable_t79SjLFUSnEYETCeC7h14w_MENglbGA';
+
+const ADMIN_EMAIL = 'YOUR_ADMIN_EMAIL_HERE';
+
+const db = window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+let artists = [];
+
+async function loginAdmin(){
+ const email = document.getElementById('email').value.trim();
+ const password = document.getElementById('password').value;
+
+ const msg = document.getElementById('message');
+ msg.textContent = 'Logging in...';
+
+ if(email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()){
+ msg.textContent = 'This email is not authorized.';
+ return;
+ }
+
+ const {data,error} = await db.auth.signInWithPassword({
+ email,password
+ });
+
+ if(error){
+ msg.textContent = error.message;
+ return;
+ }
+
+ await showDashboard();
+}
+
+async function showDashboard(){
+ const {data:{user}} = await db.auth.getUser();
+
+ if(!user || user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()){
+ await db.auth.signOut();
+ document.getElementById('message').textContent =
+ 'Administrator access denied.';
+ return;
+ }
+
+ document.getElementById('login').style.display='none';
+ document.getElementById('dashboard').style.display='block';
+
+ await loadArtists();
+}
+
+async function loadArtists(){
+ const status = document.getElementById('status');
+ status.textContent = 'Loading artists...';
+
+ const {data,error} = await db
+ .from('Artists _registration')
+ .select('*');
+
+ if(error){
+ status.textContent = 'Database error: '+error.message;
+ return;
+ }
+
+ artists = data || [];
+
+ document.getElementById('total').textContent =
+ artists.length;
+
+ document.getElementById('provinces').textContent =
+ new Set(artists.map(a=>a.province).filter(Boolean)).size;
+
+ document.getElementById('genres').textContent =
+ new Set(artists.map(a=>a.genre).filter(Boolean)).size;
+
+ renderArtists(artists);
+ status.textContent = 'Artist records loaded successfully.';
+}
+
+function renderArtists(list){
+ const head = document.getElementById('tableHead');
+ const rows = document.getElementById('artistRows');
+
+ const columns = Object.keys(artists[0] || {});
+
+ head.innerHTML = '<tr>' +
+ columns.map(c=>'<th>'+escapeHTML(c)+'</th>').join('') +
+ '</tr>';
+
+ rows.innerHTML = list.map(a=>
+ '<tr>' + columns.map(c=>
+ '<td>'+escapeHTML(a[c])+'</td>'
+ ).join('') + '</tr>'
+ ).join('');
+}
+
+function searchArtists(){
+ const q = document.getElementById('search').value.toLowerCase();
+
+ const filtered = artists.filter(a=>
+ Object.values(a).some(v=>
+ String(v ?? '').toLowerCase().includes(q)
+ )
+ );
+
+ renderArtists(filtered);
+}
+
+function escapeHTML(value){
+ return String(value ?? '').replace(/[&<>"']/g,
+ c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function logoutAdmin(){
+ await db.auth.signOut();
+ location.reload();
+}
+
+db.auth.getSession().then(async ({data})=>{
+ if(data.session){
+ await showDashboard();
+ }
+});
+</script>
+
+</body>
+  </html>
+  
