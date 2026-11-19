@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Artist Registration | MPOROKOSO MUSIC AWARDS</title>
-
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#080808;color:white;font-family:Arial,sans-serif;line-height:1.6}
@@ -25,7 +25,6 @@ button:disabled{opacity:.5}
 footer{text-align:center;background:#151515;padding:25px;border-top:2px solid gold;color:#ccc}
 </style>
 </head>
-
 <body>
 
 <header>
@@ -51,7 +50,6 @@ footer{text-align:center;background:#151515;padding:25px;border-top:2px solid go
 <h2>Register as an Artist</h2>
 
 <form id="artistForm">
-
 <label>Artist or Stage Name *</label>
 <input name="artist_name" required>
 
@@ -99,12 +97,8 @@ footer{text-align:center;background:#151515;padding:25px;border-top:2px solid go
 
 <p class="note">Fields marked * are required.</p>
 
-<button type="submit" id="submitBtn">
-SUBMIT REGISTRATION
-</button>
-
+<button type="submit" id="submitBtn">SUBMIT REGISTRATION</button>
 <div id="message" role="status" aria-live="polite"></div>
-
 </form>
 </div>
 </main>
@@ -118,7 +112,6 @@ SUBMIT REGISTRATION
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
 const SUPABASE_URL =
 "https://qexskbpmkvglgavziagl.supabase.co";
@@ -127,8 +120,7 @@ const SUPABASE_KEY =
 "sb_publishable_t79SjLFUSnEYETCeC7h14w_MENglbGA";
 
 const supabaseClient = window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+SUPABASE_URL, SUPABASE_KEY
 );
 
 const form = document.getElementById("artistForm");
@@ -136,12 +128,10 @@ const message = document.getElementById("message");
 const submitBtn = document.getElementById("submitBtn");
 
 form.addEventListener("submit", async function(event) {
-
 event.preventDefault();
 
 submitBtn.disabled = true;
 submitBtn.textContent = "SUBMITTING...";
-
 message.textContent = "Please wait...";
 message.style.background = "#333";
 
@@ -159,40 +149,28 @@ bio: data.get("bio").trim() || null
 };
 
 try {
-
-const { error } = await supabaseClient
+const {error} = await supabaseClient
 .from("Artists _registration")
 .insert([artist]);
 
-if (error) throw error;
+if(error) throw error;
 
 message.textContent =
 "SUCCESS! Your registration has been received. Thank you!";
-
 message.style.background = "#174d25";
 message.style.color = "white";
-
 form.reset();
 
-} catch (error) {
-
-console.error("Registration error:", error);
-
-message.textContent =
-"Registration failed: " + error.message;
-
+} catch(error) {
+console.error(error);
+message.textContent = "Registration failed: " + error.message;
 message.style.background = "#681b1b";
 message.style.color = "white";
-
 } finally {
-
 submitBtn.disabled = false;
 submitBtn.textContent = "SUBMIT REGISTRATION";
-
 }
-
 });
 </script>
-
 </body>
 </html>
