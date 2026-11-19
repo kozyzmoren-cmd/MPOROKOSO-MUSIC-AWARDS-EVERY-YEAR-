@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,338 +6,254 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MPOROKOSO MUSIC AWARDS | ADMIN</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 *{box-sizing:border-box}
+
 body{
- margin:0;background:#080808;color:white;
- font-family:Arial,sans-serif;padding:20px;
+ margin:0;
+ background:#080808;
+ color:white;
+ font-family:Arial,sans-serif;
 }
-.container{max-width:1100px;margin:auto}
-header{text-align:center;padding:20px}
-h1{color:gold}
-.card{
- background:#171717;padding:20px;
- border:1px solid #333;border-radius:12px;
- margin-bottom:20px;
+
+header{
+ background:#111;
+ padding:20px;
+ border-bottom:2px solid #d4af37;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
 }
-input,button{
- width:100%;padding:13px;margin:8px 0;
- border-radius:7px;border:1px solid #444;
+
+.logo{
+ color:#d4af37;
+ font-size:19px;
+ font-weight:bold;
 }
-input{background:#222;color:white}
-button{
- background:gold;color:black;
- font-weight:bold;cursor:pointer;
+
+.menu{
+ display:flex;
+ gap:10px;
+ flex-wrap:wrap;
+ padding:15px;
+ background:#111;
 }
-.logout{background:#b22222;color:white}
-.stats{
+
+.menu button{
+ background:#222;
+ color:white;
+ border:1px solid #444;
+ padding:12px 16px;
+ cursor:pointer;
+ border-radius:5px;
+}
+
+.menu button:hover,
+.menu button.active{
+ background:#d4af37;
+ color:black;
+}
+
+main{padding:20px}
+
+.page{display:none}
+.page.active{display:block}
+
+h2{color:#d4af37}
+
+.cards{
  display:grid;
- grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+ grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
  gap:15px;
 }
-.stat{
- background:#222;padding:20px;
- border-radius:10px;text-align:center;
+
+.card{
+ background:#151515;
+ padding:22px;
+ border:1px solid #333;
+ border-radius:10px;
 }
-.stat h2{color:gold}
-table{
- width:100%;border-collapse:collapse;
- min-width:700px;
+
+.card h3{
+ color:#aaa;
+ font-size:14px;
 }
-th,td{
- padding:12px;border:1px solid #444;
- text-align:left;
+
+.number{
+ color:#d4af37;
+ font-size:30px;
+ font-weight:bold;
 }
-th{background:#292929;color:gold}
-.table-wrap{overflow-x:auto}
-#dashboard{display:none}
-#message,#status{color:gold}
+
+.panel{
+ background:#151515;
+ padding:20px;
+ border-radius:10px;
+ margin-top:20px;
+ border:1px solid #333;
+}
+
+.action{
+ background:#d4af37;
+ color:black;
+ padding:12px 20px;
+ border:0;
+ border-radius:5px;
+ cursor:pointer;
+ font-weight:bold;
+}
+
+input{
+ width:100%;
+ padding:13px;
+ background:#222;
+ border:1px solid #555;
+ color:white;
+ margin:10px 0;
+ border-radius:5px;
+}
+
+footer{
+ text-align:center;
+ padding:25px;
+ color:#888;
+ border-top:1px solid #333;
+ margin-top:40px;
+}
+
+@media(max-width:600px){
+ header{flex-direction:column;gap:10px}
+ .menu button{flex:1}
+}
 </style>
 </head>
 
 <body>
-<div class="container">
 
 <header>
-<h1>MPOROKOSO MUSIC AWARDS</h1>
-<p>ADMINISTRATION DASHBOARD</p>
+ <div class="logo">🏆 MPOROKOSO MUSIC AWARDS</div>
+ <div>ADMIN PANEL | 2027</div>
 </header>
 
-<!-- ADMIN LOGIN -->
-<div class="card" id="login">
-<h2>Admin Login</h2>
+<nav class="menu">
+ <button class="active" onclick="showPage('home',this)">Home</button>
+ <button onclick="showPage('artists',this)">Artists</button>
+ <button onclick="showPage('nominations',this)">Nominations</button>
+ <button onclick="showPage('voting',this)">Voting</button>
+ <button onclick="showPage('categories',this)">Categories</button>
+ <button onclick="showPage('settings',this)">Settings</button>
+</nav>
 
-<input type="email" id="email" placeholder="Admin Email">
-<input type="password" id="password" placeholder="Password">
+<main>
 
-<button id="loginButton" onclick="loginAdmin()">LOGIN</button>
+<section id="home" class="page active">
+<h2>Admin Dashboard</h2>
+<p>Welcome to MPOROKOSO MUSIC AWARDS 2027 administration.</p>
 
-<p id="message"></p>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard">
+<div class="cards">
 
 <div class="card">
-<h2>Welcome, Administrator</h2>
-<button class="logout" onclick="logoutAdmin()">LOGOUT</button>
-</div>
-
-<div class="stats">
-<div class="stat">
-<h3>Total Registrations</h3>
-<h2 id="total">0</h2>
-</div>
+<h3>Registered Artists</h3>
+<div class="number">0</div>
 </div>
 
 <div class="card">
-<h2>Registered Artists</h2>
-
-<input type="text" id="search"
-placeholder="Search artists..."
-oninput="displayArtists()">
-
-<button onclick="loadArtists()">REFRESH</button>
-
-<p id="status"></p>
-
-<div class="table-wrap">
-<table>
-<thead>
-<tr id="headings"></tr>
-</thead>
-<tbody id="artistList"></tbody>
-</table>
+<h3>Total Nominations</h3>
+<div class="number">0</div>
 </div>
+
+<div class="card">
+<h3>Total Votes</h3>
+<div class="number">0</div>
+</div>
+
+<div class="card">
+<h3>Award Categories</h3>
+<div class="number">0</div>
 </div>
 
 </div>
+
+<div class="panel">
+<h2>System Overview</h2>
+<p>Manage artists, nominations, voting and award categories from one place.</p>
 </div>
+</section>
+
+<section id="artists" class="page">
+<h2>Artists Management</h2>
+
+<div class="panel">
+<h3>Registered Artists</h3>
+<input type="search" placeholder="Search artists...">
+<p>Artist registrations will appear here after connecting the database.</p>
+</div>
+</section>
+
+<section id="nominations" class="page">
+<h2>Nominations Management</h2>
+
+<div class="panel">
+<h3>Manage Nominations</h3>
+<p>View and manage nominated artists.</p>
+<button class="action">Add Nomination</button>
+</div>
+</section>
+
+<section id="voting" class="page">
+<h2>Voting Management</h2>
+
+<div class="panel">
+<h3>Voting Control</h3>
+<p>Manage the awards voting system.</p>
+<button class="action">Open Voting</button>
+<button class="action">Close Voting</button>
+</div>
+</section>
+
+<section id="categories" class="page">
+<h2>Award Categories</h2>
+
+<div class="panel">
+<h3>Manage Award Categories</h3>
+<input type="text" placeholder="Enter category name">
+<button class="action">Add Category</button>
+</div>
+</section>
+
+<section id="settings" class="page">
+<h2>Admin Settings</h2>
+
+<div class="panel">
+<h3>Website Settings</h3>
+<p>MPOROKOSO MUSIC AWARDS 2027</p>
+<p>Administrator: kozyzmoren@gmail.com</p>
+<p>Founder: Boss One Mumba</p>
+</div>
+</section>
+
+</main>
+
+<footer>
+MPOROKOSO MUSIC AWARDS 2027<br>
+All Rights Reserved.
+</footer>
 
 <script>
+function showPage(page,button){
 
-// SUPABASE CONNECTION
-const SUPABASE_URL =
-"https://qexskbpmkvglgavziagl.supabase.co";
+ document.querySelectorAll('.page').forEach(p=>{
+  p.classList.remove('active');
+ });
 
-const SUPABASE_KEY =
-"sb_publishable_t79SjLFUSnEYETCeC7h14w_MENglbGA";
+ document.querySelectorAll('.menu button').forEach(b=>{
+  b.classList.remove('active');
+ });
 
-const supabaseClient = window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
-
-// ADMIN EMAIL
-const ADMIN_EMAIL = "kozyzmoren@gmail.com";
-
-// DATABASE TABLE
-const TABLE_NAME = "Artists _registration";
-
-let artists = [];
-let columns = [];
-
-// ADMIN LOGIN
-async function loginAdmin(){
-
-const email = document.getElementById("email").value.trim();
-const password = document.getElementById("password").value;
-
-const message = document.getElementById("message");
-const button = document.getElementById("loginButton");
-
-if(!email || !password){
-message.innerText = "Enter your email and password.";
-return;
+ document.getElementById(page).classList.add('active');
+ button.classList.add('active');
 }
-
-if(email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()){
-message.innerText = "Access denied. Admin only.";
-return;
-}
-
-button.disabled = true;
-message.innerText = "Please wait...";
-
-try{
-
-const {data,error} = await supabaseClient.auth.signInWithPassword({
-email:email,
-password:password
-});
-
-if(error) throw error;
-
-if(data.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()){
-await supabaseClient.auth.signOut();
-throw new Error("Unauthorized administrator.");
-}
-
-message.innerText = "";
-await showDashboard();
-
-}catch(error){
-message.innerText = error.message;
-}finally{
-button.disabled = false;
-}
-
-}
-
-// SHOW DASHBOARD
-async function showDashboard(){
-
-document.getElementById("login").style.display="none";
-document.getElementById("dashboard").style.display="block";
-
-await loadArtists();
-
-}
-
-// LOAD REGISTERED ARTISTS
-async function loadArtists(){
-
-document.getElementById("status").innerText =
-"Loading registrations...";
-
-const {data,error} = await supabaseClient
-.from(TABLE_NAME)
-.select("*")
-.order("id",{ascending:false});
-
-if(error){
-
-document.getElementById("status").innerText =
-"Database error: "+error.message;
-
-return;
-}
-
-artists = data || [];
-
-columns = [
-"Artists name",
-"Phone",
-"full_name",
-"email",
-"province",
-"genre",
-"music_link",
-"bio",
-"artist_name",
-"phone",
-"id"
-].filter((column,index,array)=>
-artists.length && Object.keys(artists[0]).includes(column)
-);
-
-document.getElementById("total").innerText = artists.length;
-
-displayArtists();
-
-document.getElementById("status").innerText =
-artists.length+" registrations found.";
-
-}
-
-// DISPLAY ARTISTS
-function displayArtists(){
-
-const search = document.getElementById("search").value.toLowerCase();
-
-const filtered = artists.filter(artist =>
-Object.values(artist).some(value =>
-String(value ?? "").toLowerCase().includes(search)
-)
-);
-
-const headings = document.getElementById("headings");
-const list = document.getElementById("artistList");
-
-headings.innerHTML="";
-list.innerHTML="";
-
-columns.forEach(column=>{
-
-const th=document.createElement("th");
-th.textContent=column.replaceAll("_"," ");
-headings.appendChild(th);
-
-});
-
-filtered.forEach(artist=>{
-
-const tr=document.createElement("tr");
-
-columns.forEach(column=>{
-
-const td=document.createElement("td");
-td.textContent=artist[column] ?? "";
-tr.appendChild(td);
-
-});
-
-list.appendChild(tr);
-
-});
-
-if(filtered.length===0){
-
-const tr=document.createElement("tr");
-const td=document.createElement("td");
-
-td.colSpan=Math.max(columns.length,1);
-td.textContent="No artists found.";
-
-tr.appendChild(td);
-list.appendChild(tr);
-
-}
-
-}
-
-// LOGOUT
-async function logoutAdmin(){
-
-await supabaseClient.auth.signOut();
-
-artists=[];
-
-document.getElementById("dashboard").style.display="none";
-document.getElementById("login").style.display="block";
-
-document.getElementById("password").value="";
-document.getElementById("message").innerText =
-"Logged out successfully.";
-
-}
-
-// CHECK EXISTING SESSION
-async function checkSession(){
-
-const {data} = await supabaseClient.auth.getSession();
-
-if(data.session){
-
-if(data.session.user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()){
-
-await showDashboard();
-
-}else{
-
-await supabaseClient.auth.signOut();
-
-}
-
-}
-
-}
-
-checkSession();
-
 </script>
+
 </body>
- </html>
- 
+</html>
