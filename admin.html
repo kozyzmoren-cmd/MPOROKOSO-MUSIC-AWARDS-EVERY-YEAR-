@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MPOROKOSO MUSIC AWARDS | Admin</title>
+<title>mporokoso music awards | admin</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -80,47 +80,48 @@ tr:nth-child(even){background:#222}
 <body>
 
 <header>
-<h1>MPOROKOSO MUSIC AWARDS 2027</h1>
-<h3>ADMINISTRATION DASHBOARD</h3>
+<h1>mporokoso music awards 2027</h1>
+<h3>administration dashboard</h3>
 </header>
 
 <div class="container">
 
 <div class="card" id="login">
-<h2>Administrator Login</h2>
-<input type="email" id="email" placeholder="Admin Email">
-<input type="password" id="password" placeholder="Password">
-<button onclick="loginAdmin()">LOGIN</button>
+<h2>administrator login</h2>
+<input type="email" id="email" placeholder="admin email">
+<input type="password" id="password" placeholder="password">
+<button onclick="login_admin()">login</button>
 <p id="message"></p>
 </div>
 
 <div id="dashboard">
 
 <div class="card">
-<h2>Welcome Administrator</h2>
-<button class="logout" onclick="logoutAdmin()">LOG OUT</button>
+<h2>welcome administrator</h2>
+<button class="logout" onclick="logout_admin()">log out</button>
 </div>
 
 <div class="stats">
 <div class="stat">
-<h3>Total Artists</h3>
+<h3>total artists</h3>
 <h2 id="total">0</h2>
 </div>
 <div class="stat">
-<h3>Provinces</h3>
+<h3>provinces</h3>
 <h2 id="provinces">0</h2>
 </div>
 <div class="stat">
-<h3>Genres</h3>
+<h3>genres</h3>
 <h2 id="genres">0</h2>
 </div>
 </div>
 
 <div class="card">
-<h2>Registered Artists</h2>
+<h2>registered artists</h2>
+
 <input id="search"
-placeholder="Search artist, phone, email or province..."
-oninput="searchArtists()">
+placeholder="search artist, phone, email or province..."
+oninput="search_artists()">
 
 <div class="table-wrap">
 <table>
@@ -128,6 +129,7 @@ oninput="searchArtists()">
 <tbody id="artistRows"></tbody>
 </table>
 </div>
+
 <p id="status"></p>
 </div>
 
@@ -135,35 +137,37 @@ oninput="searchArtists()">
 </div>
 
 <script>
-const SUPABASE_URL =
+const supabase_url =
 'https://qexskbpmkvglgavziagl.supabase.co';
 
-const SUPABASE_KEY =
+const supabase_key =
 'sb_publishable_t79SjLFUSnEYETCeC7h14w_MENglbGA';
 
-const ADMIN_EMAIL = 'YOUR_ADMIN_EMAIL_HERE';
+const admin_email = 'kozyzmoren@gmail.com';
 
 const db = window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+supabase_url,
+supabase_key
 );
 
 let artists = [];
 
-async function loginAdmin(){
+async function login_admin(){
+
  const email = document.getElementById('email').value.trim();
  const password = document.getElementById('password').value;
-
  const msg = document.getElementById('message');
- msg.textContent = 'Logging in...';
 
- if(email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()){
- msg.textContent = 'This email is not authorized.';
+ msg.textContent = 'logging in...';
+
+ if(email.toLowerCase() !== admin_email.toLowerCase()){
+ msg.textContent = 'this email is not authorized.';
  return;
  }
 
  const {data,error} = await db.auth.signInWithPassword({
- email,password
+ email: email,
+ password: password
  });
 
  if(error){
@@ -171,35 +175,43 @@ async function loginAdmin(){
  return;
  }
 
- await showDashboard();
+ await show_dashboard();
 }
 
-async function showDashboard(){
- const {data:{user}} = await db.auth.getUser();
+async function show_dashboard(){
 
- if(!user || user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()){
+ const {data,error} = await db.auth.getUser();
+
+ const user = data?.user;
+
+ if(error || !user ||
+ user.email?.toLowerCase() !== admin_email.toLowerCase()){
+
  await db.auth.signOut();
+
  document.getElementById('message').textContent =
- 'Administrator access denied.';
+ 'administrator access denied.';
+
  return;
  }
 
  document.getElementById('login').style.display='none';
  document.getElementById('dashboard').style.display='block';
 
- await loadArtists();
+ await load_artists();
 }
 
-async function loadArtists(){
+async function load_artists(){
+
  const status = document.getElementById('status');
- status.textContent = 'Loading artists...';
+ status.textContent = 'loading artists...';
 
  const {data,error} = await db
  .from('Artists _registration')
  .select('*');
 
  if(error){
- status.textContent = 'Database error: '+error.message;
+ status.textContent = 'database error: '+error.message;
  return;
  }
 
@@ -209,33 +221,49 @@ async function loadArtists(){
  artists.length;
 
  document.getElementById('provinces').textContent =
- new Set(artists.map(a=>a.province).filter(Boolean)).size;
+ new Set(artists.map(a=>get_field(a,'province')).filter(Boolean)).size;
 
  document.getElementById('genres').textContent =
- new Set(artists.map(a=>a.genre).filter(Boolean)).size;
+ new Set(artists.map(a=>get_field(a,'genre')).filter(Boolean)).size;
 
- renderArtists(artists);
- status.textContent = 'Artist records loaded successfully.';
+ render_artists(artists);
+
+ status.textContent = 'artist records loaded successfully.';
 }
 
-function renderArtists(list){
+function get_field(row,name){
+ const key = Object.keys(row).find(
+ k=>k.toLowerCase().replace(/[\s_-]/g,'') === name
+ );
+ return key ? row[key] : '';
+}
+
+function render_artists(list){
+
  const head = document.getElementById('tableHead');
  const rows = document.getElementById('artistRows');
 
  const columns = Object.keys(artists[0] || {});
 
  head.innerHTML = '<tr>' +
- columns.map(c=>'<th>'+escapeHTML(c)+'</th>').join('') +
+ columns.map(c=>'<th>'+escape_html(c)+'</th>').join('') +
  '</tr>';
+
+ if(!list.length){
+ rows.innerHTML =
+ '<tr><td colspan="20">no registered artists found</td></tr>';
+ return;
+ }
 
  rows.innerHTML = list.map(a=>
  '<tr>' + columns.map(c=>
- '<td>'+escapeHTML(a[c])+'</td>'
+ '<td>'+escape_html(a[c])+'</td>'
  ).join('') + '</tr>'
  ).join('');
 }
 
-function searchArtists(){
+function search_artists(){
+
  const q = document.getElementById('search').value.toLowerCase();
 
  const filtered = artists.filter(a=>
@@ -244,26 +272,38 @@ function searchArtists(){
  )
  );
 
- renderArtists(filtered);
+ render_artists(filtered);
 }
 
-function escapeHTML(value){
+function escape_html(value){
+
  return String(value ?? '').replace(/[&<>"']/g,
- c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ c=>({
+ '&':'&amp;',
+ '<':'&lt;',
+ '>':'&gt;',
+ '"':'&quot;',
+ "'":'&#39;'
+ }[c]));
 }
 
-async function logoutAdmin(){
+async function logout_admin(){
  await db.auth.signOut();
  location.reload();
 }
 
-db.auth.getSession().then(async ({data})=>{
+db.auth.getSession().then(async ({data,error})=>{
+
+ if(error) return;
+
  if(data.session){
- await showDashboard();
+ await show_dashboard();
  }
+
 });
+
 </script>
 
 </body>
-  </html>
-  
+</html>
+
