@@ -10,35 +10,25 @@
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;
- background:#080808;
- color:white;
- font-family:Arial,sans-serif;
- padding:20px;
+ margin:0;background:#080808;color:white;
+ font-family:Arial,sans-serif;padding:20px;
 }
 .container{max-width:1100px;margin:auto}
 header{text-align:center;padding:20px}
 h1{color:gold}
 .card{
- background:#171717;
- padding:20px;
- border:1px solid #333;
- border-radius:12px;
+ background:#171717;padding:20px;
+ border:1px solid #333;border-radius:12px;
  margin-bottom:20px;
 }
 input,button{
- width:100%;
- padding:13px;
- margin:8px 0;
- border-radius:7px;
- border:1px solid #444;
+ width:100%;padding:13px;margin:8px 0;
+ border-radius:7px;border:1px solid #444;
 }
 input{background:#222;color:white}
 button{
- background:gold;
- color:black;
- font-weight:bold;
- cursor:pointer;
+ background:gold;color:black;
+ font-weight:bold;cursor:pointer;
 }
 .logout{background:#b22222;color:white}
 .stats{
@@ -47,26 +37,22 @@ button{
  gap:15px;
 }
 .stat{
- background:#222;
- padding:20px;
- border-radius:10px;
- text-align:center;
+ background:#222;padding:20px;
+ border-radius:10px;text-align:center;
 }
 .stat h2{color:gold}
 table{
- width:100%;
- border-collapse:collapse;
+ width:100%;border-collapse:collapse;
  min-width:700px;
 }
 th,td{
- padding:12px;
- border:1px solid #444;
+ padding:12px;border:1px solid #444;
  text-align:left;
 }
 th{background:#292929;color:gold}
 .table-wrap{overflow-x:auto}
 #dashboard{display:none}
-#message{color:gold}
+#message,#status{color:gold}
 </style>
 </head>
 
@@ -78,17 +64,14 @@ th{background:#292929;color:gold}
 <p>ADMINISTRATION DASHBOARD</p>
 </header>
 
-<!-- LOGIN -->
+<!-- ADMIN LOGIN -->
 <div class="card" id="login">
 <h2>Admin Login</h2>
 
-<input type="email" id="email"
-placeholder="Admin Email">
+<input type="email" id="email" placeholder="Admin Email">
+<input type="password" id="password" placeholder="Password">
 
-<input type="password" id="password"
-placeholder="Password">
-
-<button onclick="loginAdmin()">LOGIN</button>
+<button id="loginButton" onclick="loginAdmin()">LOGIN</button>
 
 <p id="message"></p>
 </div>
@@ -135,48 +118,71 @@ oninput="displayArtists()">
 <script>
 
 // SUPABASE CONNECTION
-const SUPABASE_URL = "https://qexskbpmkvglgavziagl.supabase.co";
+const SUPABASE_URL =
+"https://qexskbpmkvglgavziagl.supabase.co";
 
-const SUPABASE_KEY = "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
+const SUPABASE_KEY =
+"sb_publishable_t79SjLFUSnEYETCeC7h14w_MENglbGA";
 
 const supabaseClient = window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
 
+// ADMIN EMAIL
 const ADMIN_EMAIL = "kozyzmoren@gmail.com";
 
-// TABLE NAME
+// DATABASE TABLE
 const TABLE_NAME = "Artists _registration";
 
 let artists = [];
 let columns = [];
 
-// LOGIN
+// ADMIN LOGIN
 async function loginAdmin(){
 
 const email = document.getElementById("email").value.trim();
 const password = document.getElementById("password").value;
 
-document.getElementById("message").innerText = "Please wait...";
+const message = document.getElementById("message");
+const button = document.getElementById("loginButton");
 
-if(email.toLowerCase() !== ADMIN_EMAIL){
-document.getElementById("message").innerText =
-"Access denied. Admin only.";
+if(!email || !password){
+message.innerText = "Enter your email and password.";
 return;
 }
+
+if(email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()){
+message.innerText = "Access denied. Admin only.";
+return;
+}
+
+button.disabled = true;
+message.innerText = "Please wait...";
+
+try{
 
 const {data,error} = await supabaseClient.auth.signInWithPassword({
 email:email,
 password:password
 });
 
-if(error){
-document.getElementById("message").innerText = error.message;
-return;
+if(error) throw error;
+
+if(data.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()){
+await supabaseClient.auth.signOut();
+throw new Error("Unauthorized administrator.");
 }
 
-showDashboard();
+message.innerText = "";
+await showDashboard();
+
+}catch(error){
+message.innerText = error.message;
+}finally{
+button.disabled = false;
+}
+
 }
 
 // SHOW DASHBOARD
@@ -186,12 +192,14 @@ document.getElementById("login").style.display="none";
 document.getElementById("dashboard").style.display="block";
 
 await loadArtists();
+
 }
 
-// LOAD ARTISTS
+// LOAD REGISTERED ARTISTS
 async function loadArtists(){
 
-document.getElementById("status").innerText="Loading registrations...";
+document.getElementById("status").innerText =
+"Loading registrations...";
 
 const {data,error} = await supabaseClient
 .from(TABLE_NAME)
@@ -199,44 +207,63 @@ const {data,error} = await supabaseClient
 .order("id",{ascending:false});
 
 if(error){
+
 document.getElementById("status").innerText =
 "Database error: "+error.message;
+
 return;
 }
 
-artists=data || [];
+artists = data || [];
 
-columns=artists.length ? Object.keys(artists[0]) : [];
+columns = [
+"Artists name",
+"Phone",
+"full_name",
+"email",
+"province",
+"genre",
+"music_link",
+"bio",
+"artist_name",
+"phone",
+"id"
+].filter((column,index,array)=>
+artists.length && Object.keys(artists[0]).includes(column)
+);
 
-document.getElementById("total").innerText=artists.length;
+document.getElementById("total").innerText = artists.length;
 
 displayArtists();
 
 document.getElementById("status").innerText =
 artists.length+" registrations found.";
+
 }
 
 // DISPLAY ARTISTS
 function displayArtists(){
 
-const search=document.getElementById("search").value.toLowerCase();
+const search = document.getElementById("search").value.toLowerCase();
 
-const filtered=artists.filter(artist =>
+const filtered = artists.filter(artist =>
 Object.values(artist).some(value =>
 String(value ?? "").toLowerCase().includes(search)
 )
 );
 
-const headings=document.getElementById("headings");
-const list=document.getElementById("artistList");
+const headings = document.getElementById("headings");
+const list = document.getElementById("artistList");
 
 headings.innerHTML="";
 list.innerHTML="";
 
 columns.forEach(column=>{
+
 const th=document.createElement("th");
 th.textContent=column.replaceAll("_"," ");
 headings.appendChild(th);
+
 });
 
 filtered.forEach(artist=>{
@@ -256,8 +283,18 @@ list.appendChild(tr);
 });
 
 if(filtered.length===0){
-list.innerHTML='<tr><td colspan="20">No artists found.</td></tr>';
+
+const tr=document.createElement("tr");
+const td=document.createElement("td");
+
+td.colSpan=Math.max(columns.length,1);
+td.textContent="No artists found.";
+
+tr.appendChild(td);
+list.appendChild(tr);
+
 }
+
 }
 
 // LOGOUT
@@ -271,7 +308,8 @@ document.getElementById("dashboard").style.display="none";
 document.getElementById("login").style.display="block";
 
 document.getElementById("password").value="";
-document.getElementById("message").innerText="Logged out successfully.";
+document.getElementById("message").innerText =
+"Logged out successfully.";
 
 }
 
@@ -282,11 +320,16 @@ const {data} = await supabaseClient.auth.getSession();
 
 if(data.session){
 
-if(data.session.user.email.toLowerCase()===ADMIN_EMAIL.toLowerCase()){
-showDashboard();
+if(data.session.user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()){
+
+await showDashboard();
+
 }else{
+
 await supabaseClient.auth.signOut();
+
 }
+
 }
 
 }
@@ -295,5 +338,5 @@ checkSession();
 
 </script>
 </body>
-</html>
-
+ </html>
+ 
