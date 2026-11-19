@@ -1,37 +1,29 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Artist Registration | MPOROKOSO MUSIC AWARDS</title>
-
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#080808;color:white;font-family:Arial,sans-serif;line-height:1.6}
 header{text-align:center;background:#111;padding:22px;border-bottom:2px solid gold}
-header h2{color:gold;margin:0}
-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:16px;background:#191919;padding:15px}
-nav a{color:white;text-decoration:none;font-size:14px}
-nav a:hover{color:gold}
+header h2,h1,h2{color:gold}
+nav{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;background:#191919;padding:15px}
+nav a{color:white;text-decoration:none}
 main{max-width:750px;margin:auto;padding:30px 18px}
-h1,h2{color:gold;text-align:center}
+h1,h2{text-align:center}
 .card{background:#171717;border:1px solid #594800;border-radius:9px;padding:22px;margin:18px 0}
 label{display:block;margin-top:13px;color:gold}
-input,select,textarea{
-width:100%;padding:13px;margin-top:6px;
-background:#222;color:white;border:1px solid #555;
-border-radius:5px;font-size:15px
-}
-button{background:gold;color:black;border:0;padding:13px 22px;
-margin-top:18px;border-radius:5px;font-weight:bold;width:100%;
-font-size:16px;cursor:pointer}
+input,select,textarea{width:100%;padding:13px;margin-top:6px;background:#222;color:white;border:1px solid #555;border-radius:5px;font-size:15px}
+button{background:gold;color:black;border:0;padding:13px;margin-top:18px;border-radius:5px;font-weight:bold;width:100%;font-size:16px}
 button:disabled{opacity:.5}
 .note{color:#ccc;font-size:13px}
 #message{margin-top:15px;padding:12px;border-radius:5px;text-align:center}
 footer{text-align:center;background:#151515;padding:25px;border-top:2px solid gold;color:#ccc}
 </style>
 </head>
-
 <body>
 
 <header>
@@ -55,7 +47,6 @@ footer{text-align:center;background:#151515;padding:25px;border-top:2px solid go
 
 <div class="card">
 <h2>Register as an Artist</h2>
-
 <form id="artistForm">
 
 <label>Artist or Stage Name *</label>
@@ -96,10 +87,8 @@ footer{text-align:center;background:#151515;padding:25px;border-top:2px solid go
 <textarea name="bio" rows="4"></textarea>
 
 <p class="note">Fields marked * are required.</p>
-
 <button type="submit" id="submitBtn">SUBMIT REGISTRATION</button>
 <div id="message" role="status" aria-live="polite"></div>
-
 </form>
 </div>
 </main>
@@ -111,6 +100,63 @@ footer{text-align:center;background:#151515;padding:25px;border-top:2px solid go
 <p>Email: kozyzmoren@gmail.com</p>
 <p>© 2027 MPOROKOSO MUSIC AWARDS</p>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://qexskbpmkvglgavziagl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_t79SjLFUSnEYETCeC7h14w_MENglbGA";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL, SUPABASE_KEY
+);
+
+const form = document.getElementById("artistForm");
+const message = document.getElementById("message");
+const submitBtn = document.getElementById("submitBtn");
+
+form.addEventListener("submit", async function(event) {
+  event.preventDefault();
+  submitBtn.disabled = true;
+  submitBtn.textContent = "SUBMITTING...";
+  message.textContent = "Please wait...";
+
+  const data = new FormData(form);
+
+  const artist = {
+    "Artist name": data.get("artist_name").trim(),
+    "Full name": data.get("full_name").trim(),
+    "Phone": data.get("phone").trim(),
+    "Email": data.get("email").trim(),
+    "Province": data.get("province"),
+    "Genre": data.get("genre"),
+    "Music Link": data.get("music_link").trim() || null,
+    "Bio": data.get("bio").trim() || null
+  };
+
+  try {
+    const { error } = await supabaseClient
+      .from("Artists _registration")
+      .insert([artist]);
+
+    if (error) throw error;
+
+    message.textContent = "SUCCESS! Your registration has been received. Thank you!";
+    message.style.background = "#174d25";
+    form.reset();
+
+  } catch (error) {
+    console.error("Registration error:", error);
+    message.textContent = "Registration failed: " + error.message;
+    message.style.background = "#681b1b";
+
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "SUBMIT REGISTRATION";
+  }
+});
+</script>
+</body>
+</html>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -137,14 +183,14 @@ form.addEventListener("submit", async function(event) {
   const data = new FormData(form);
 
   const artist = {
-    artist_name: data.get("artist_name").trim(),
-    full_name: data.get("full_name").trim(),
-    phone: data.get("phone").trim(),
-    email: data.get("email").trim(),
-    province: data.get("province"),
-    genre: data.get("genre"),
-    music_link: data.get("music_link").trim() || null,
-    bio: data.get("bio").trim() || null
+    "Artist name": data.get("artist_name").trim(),
+    "Full name": data.get("full_name").trim(),
+    "Phone": data.get("phone").trim(),
+    "Email": data.get("email").trim(),
+    "Province": data.get("province"),
+    "Genre": data.get("genre"),
+    "Music Link": data.get("music_link").trim() || null,
+    "Bio": data.get("bio").trim() || null
   };
 
   try {
@@ -165,7 +211,7 @@ form.addEventListener("submit", async function(event) {
     console.error("Registration error:", error);
 
     message.textContent =
-      "Registration failed: " + (error.message || "Please try again.");
+      "Registration failed: " + error.message;
     message.style.background = "#681b1b";
     message.style.color = "white";
 
@@ -174,7 +220,5 @@ form.addEventListener("submit", async function(event) {
     submitBtn.textContent = "SUBMIT REGISTRATION";
   }
 });
-</script>
-
-</body>
-</html>
+    </script>
+    
