@@ -1,73 +1,152 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MPOROKOSO MUSIC AWARDS | Admin</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#080808;color:white;font-family:Arial,sans-serif;padding:20px}
-main{max-width:1000px;margin:30px auto}
+body{
+ margin:0;background:#080808;color:white;
+ font-family:Arial,sans-serif;padding:15px
+}
+main{max-width:1100px;margin:25px auto}
 h1{color:gold;text-align:center}
-.card{background:#171717;padding:20px;border-radius:12px;margin:15px 0}
-input,button{padding:12px;margin:6px 0;width:100%;border-radius:6px;border:0}
-button{background:gold;font-weight:bold;cursor:pointer}
+h2{color:gold}
+.card{
+ background:#171717;padding:20px;
+ border-radius:12px;margin:15px 0
+}
+input,select,button{
+ padding:12px;margin:7px 0;width:100%;
+ border-radius:6px;border:1px solid #444;
+ background:#222;color:white
+}
+button{
+ background:gold;color:black;
+ font-weight:bold;border:0;cursor:pointer
+}
+button:hover{background:#e5bd35}
 table{width:100%;border-collapse:collapse}
-th,td{padding:10px;border-bottom:1px solid #444;text-align:left}
+th,td{
+ padding:11px;border-bottom:1px solid #444;
+ text-align:left;white-space:nowrap
+}
+th{color:gold}
 .wrap{overflow-x:auto}
 #dashboard{display:none}
-#status{color:gold;white-space:pre-wrap}
+#status,#message{color:gold;white-space:pre-wrap}
+.stats{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+ gap:12px
+}
+.stat{
+ background:#252525;padding:18px;
+ border-radius:10px;text-align:center
+}
+.stat strong{display:block;color:gold;font-size:28px}
+.small{color:#aaa;font-size:13px}
 </style>
 </head>
+
 <body>
 <main>
+
 <h1>MPOROKOSO MUSIC AWARDS 2027</h1>
+<p style="text-align:center;color:gold">
+ADMINISTRATION DASHBOARD
+</p>
+
 <div class="card" id="login">
 <h2>Administrator Login</h2>
-<input id="email" type="email" placeholder="Admin email">
-<input id="password" type="password" placeholder="Password">
+
+<input id="email" type="email"
+placeholder="Admin email">
+
+<input id="password" type="password"
+placeholder="Password">
+
 <button onclick="loginAdmin()">LOGIN</button>
 <p id="status"></p>
 </div>
 
 <div id="dashboard">
+
+<div class="stats">
+<div class="stat">
+<strong id="count">0</strong>
+Total Registrations
+</div>
+<div class="stat">
+<strong id="provinces">0</strong>
+Provinces
+</div>
+<div class="stat">
+<strong id="genres">0</strong>
+Music Genres
+</div>
+</div>
+
 <div class="card">
 <h2>Artist Registrations</h2>
-<p id="count">Loading...</p>
-<input id="search" placeholder="Search artists..." oninput="showArtists()">
-<button onclick="loadArtists()">REFRESH</button>
+
+<input id="search"
+placeholder="Search artist, phone or email..."
+oninput="showArtists()">
+
+<select id="provinceFilter"
+onchange="showArtists()">
+<option value="">All Provinces</option>
+</select>
+
+<select id="genreFilter"
+onchange="showArtists()">
+<option value="">All Genres</option>
+</select>
+
+<button onclick="loadArtists()">REFRESH REGISTRATIONS</button>
 <button onclick="logoutAdmin()">LOGOUT</button>
-<p id="message"></p>
+
+<p id="message">Welcome, Administrator.</p>
 </div>
+
 <div class="card wrap">
+<h2>Registered Artists</h2>
+
 <table>
-<thead>
-<tr>
-<th>ID</th><th>Artist</th><th>Name</th><th>Phone</th>
-<th>Email</th><th>Province</th><th>Genre</th><th>Bio</th><th>Artist Name</th>
-</tr>
-</thead>
+<thead id="tableHead"></thead>
 <tbody id="artists"></tbody>
 </table>
 </div>
+
 </div>
 </main>
 
 <script>
-const SUPABASE_URL = 'https://qexskbpmkvglgavziagl.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_t79SjLFUSnEYETCeC7h14w_MENglbGA';
+const SUPABASE_URL =
+'https://qexskbpmkvglgavziagl.supabase.co';
+
+const SUPABASE_PUBLISHABLE_KEY =
+'sb_publishable_t79SjLFUSnEYETCeC7h14w_MENglbGA';
 
 const db = window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_PUBLISHABLE_KEY
 );
 
+const TABLE_NAME = 'Artists _registratin';
+
 let artistData = [];
+let columns = [];
 
 async function loginAdmin(){
+
 const status = document.getElementById('status');
-status.textContent = 'Logging in...';
+status.textContent = 'Checking login...';
 
 const {data,error} = await db.auth.signInWithPassword({
 email:document.getElementById('email').value.trim(),
@@ -75,74 +154,182 @@ password:document.getElementById('password').value
 });
 
 if(error){
-status.textContent = 'Login failed: ' + error.message;
+status.textContent = 'Login failed: '+error.message;
 return;
 }
 
 document.getElementById('login').style.display='none';
 document.getElementById('dashboard').style.display='block';
-loadArtists();
+
+await loadArtists();
 }
 
 async function loadArtists(){
+
 const message = document.getElementById('message');
-message.textContent = 'Loading registrations...';
+message.textContent = 'Loading artists...';
 
 const {data,error} = await db
-.from('Artists _registratin')
+.from(TABLE_NAME)
 .select('*')
 .order('id',{ascending:false});
 
 if(error){
-message.textContent = 'Database error: ' + error.message;
+message.textContent = 'Database error: '+error.message;
 return;
 }
 
 artistData = data || [];
-document.getElementById('count').textContent =
-'Total registrations: ' + artistData.length;
 
-message.textContent = 'Registrations loaded successfully.';
+columns = artistData.length
+? Object.keys(artistData[0])
+: [];
+
+document.getElementById('count').textContent =
+artistData.length;
+
+const provinceList = [...new Set(
+artistData.map(a=>a.province).filter(Boolean)
+)];
+
+const genreList = [...new Set(
+artistData.map(a=>a.genre).filter(Boolean)
+)];
+
+document.getElementById('provinces').textContent =
+provinceList.length;
+
+document.getElementById('genres').textContent =
+genreList.length;
+
+fillFilter('provinceFilter',provinceList,'All Provinces');
+fillFilter('genreFilter',genreList,'All Genres');
+
 showArtists();
+
+message.textContent =
+'Registrations loaded successfully.';
+}
+
+function fillFilter(id,values,placeholder){
+
+const select = document.getElementById(id);
+const previous = select.value;
+
+select.innerHTML =
+'<option value="">'+safe(placeholder)+'</option>';
+
+values.sort().forEach(value=>{
+const option = document.createElement('option');
+option.value = value;
+option.textContent = value;
+select.appendChild(option);
+});
+
+if(values.includes(previous)){
+select.value = previous;
+}
 }
 
 function showArtists(){
-const search = document.getElementById('search').value.toLowerCase();
-const tbody = document.getElementById('artists');
 
-const filtered = artistData.filter(a =>
-Object.values(a).some(v =>
-String(v ?? '').toLowerCase().includes(search)
-)
+const search =
+document.getElementById('search').value.toLowerCase();
+
+const province =
+document.getElementById('provinceFilter').value;
+
+const genre =
+document.getElementById('genreFilter').value;
+
+const filtered = artistData.filter(a=>{
+
+const matchesSearch = Object.values(a).some(value=>
+String(value ?? '').toLowerCase().includes(search)
 );
 
-tbody.innerHTML = filtered.map(a => `
-<tr>
-<td>${safe(a.id)}</td>
-<td>${safe(a.artist)}</td>
-<td>${safe(a.name)}</td>
-<td>${safe(a.phone)}</td>
-<td>${safe(a.email)}</td>
-<td>${safe(a.province)}</td>
-<td>${safe(a.genre)}</td>
-<td>${safe(a.bio)}</td>
-<td>${safe(a['artist _Name'])}</td>
-</tr>
-`).join('');
+const matchesProvince =
+!province || a.province === province;
+
+const matchesGenre =
+!genre || a.genre === genre;
+
+return matchesSearch &&
+matchesProvince && matchesGenre;
+});
+
+const head = document.getElementById('tableHead');
+const tbody = document.getElementById('artists');
+
+head.innerHTML = '';
+tbody.innerHTML = '';
+
+if(columns.length === 0){
+head.innerHTML = '<tr><th>Registration records</th></tr>';
+tbody.innerHTML =
+'<tr><td>No registrations found yet.</td></tr>';
+return;
+}
+
+const headerRow = document.createElement('tr');
+
+columns.forEach(column=>{
+const th = document.createElement('th');
+th.textContent = column;
+headerRow.appendChild(th);
+});
+
+head.appendChild(headerRow);
+
+filtered.forEach(a=>{
+
+const tr = document.createElement('tr');
+
+columns.forEach(column=>{
+const td = document.createElement('td');
+td.textContent = a[column] ?? '';
+tr.appendChild(td);
+});
+
+tbody.appendChild(tr);
+});
+
+if(filtered.length === 0){
+const tr = document.createElement('tr');
+const td = document.createElement('td');
+td.colSpan = columns.length;
+td.textContent = 'No matching artists found.';
+tr.appendChild(td);
+tbody.appendChild(tr);
+}
 }
 
 function safe(value){
-return String(value ?? '').replace(/[&<>"']/g, c => ({
-'&':'&amp;','<':'&lt;','>':'&gt;',
-'"':'&quot;',"'":'&#39;'
+return String(value ?? '').replace(/[&<>"']/g,c=>({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#39;'
 }[c]));
 }
 
 async function logoutAdmin(){
+
 await db.auth.signOut();
 location.reload();
+
 }
+
+db.auth.onAuthStateChange((event,session)=>{
+
+if(event === 'SIGNED_OUT'){
+document.getElementById('dashboard').style.display='none';
+document.getElementById('login').style.display='block';
+}
+
+});
 </script>
+
 </body>
 </html>
-
