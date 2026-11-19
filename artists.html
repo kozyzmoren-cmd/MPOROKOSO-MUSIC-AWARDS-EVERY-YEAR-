@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Artist Registration | MPOROKOSO MUSIC AWARDS</title>
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#080808;color:white;font-family:Arial,sans-serif;line-height:1.6}
@@ -17,12 +17,22 @@ main{max-width:750px;margin:auto;padding:30px 18px}
 h1,h2{color:gold;text-align:center}
 .card{background:#171717;border:1px solid #594800;border-radius:9px;padding:22px;margin:18px 0}
 label{display:block;margin-top:13px;color:gold}
-input,select,textarea{width:100%;padding:13px;margin-top:6px;background:#222;color:white;border:1px solid #555;border-radius:5px}
-button{background:gold;color:black;border:0;padding:13px 22px;margin-top:18px;border-radius:5px;font-weight:bold}
+input,select,textarea{
+width:100%;padding:13px;margin-top:6px;
+background:#222;color:white;border:1px solid #555;
+border-radius:5px;font-size:15px
+}
+button{background:gold;color:black;border:0;padding:13px 22px;
+margin-top:18px;border-radius:5px;font-weight:bold;width:100%;
+font-size:16px;cursor:pointer}
+button:disabled{opacity:.5}
 .note{color:#ccc;font-size:13px}
+#message{margin-top:15px;padding:12px;border-radius:5px;text-align:center}
 footer{text-align:center;background:#151515;padding:25px;border-top:2px solid gold;color:#ccc}
+.gold{color:gold}
 </style>
 </head>
+
 <body>
 
 <header>
@@ -49,20 +59,20 @@ footer{text-align:center;background:#151515;padding:25px;border-top:2px solid go
 
 <form id="artistForm">
 
-<label>Artist or Stage Name</label>
-<input type="text" placeholder="Enter artist name" required>
+<label>Artist or Stage Name *</label>
+<input name="artist_name" type="text" placeholder="Enter artist name" required>
 
-<label>Full Name</label>
-<input type="text" placeholder="Enter full name" required>
+<label>Full Name *</label>
+<input name="full_name" type="text" placeholder="Enter full name" required>
 
-<label>Phone Number</label>
-<input type="tel" placeholder="Enter phone number" required>
+<label>Phone Number *</label>
+<input name="phone" type="tel" placeholder="Enter phone number" required>
 
-<label>Email Address</label>
-<input type="email" placeholder="Enter email address" required>
+<label>Email Address *</label>
+<input name="email" type="email" placeholder="Enter email address" required>
 
-<label>Province</label>
-<select required>
+<label>Province *</label>
+<select name="province" required>
 <option value="">Select Province</option>
 <option>Central</option>
 <option>Copperbelt</option>
@@ -76,8 +86,8 @@ footer{text-align:center;background:#151515;padding:25px;border-top:2px solid go
 <option>Western</option>
 </select>
 
-<label>Music Genre</label>
-<select required>
+<label>Music Genre *</label>
+<select name="genre" required>
 <option value="">Select Genre</option>
 <option>Gospel</option>
 <option>Hip Hop</option>
@@ -89,16 +99,19 @@ footer{text-align:center;background:#151515;padding:25px;border-top:2px solid go
 </select>
 
 <label>Music or YouTube Link</label>
-<input type="url" placeholder="Paste your music link">
+<input name="music_link" type="url" placeholder="Paste your music link">
 
 <label>Tell Us About Yourself</label>
-<textarea rows="4" placeholder="Write a short artist biography"></textarea>
+<textarea name="bio" rows="4" placeholder="Write a short artist biography"></textarea>
 
 <p class="note">
-This is a registration form preview. Do not submit real personal information yet. Database connection and secure submission will be added before registrations open.
+Fields marked * are required. Your registration details
+will be submitted to MPOROKOSO MUSIC AWARDS.
 </p>
 
-<button type="button" onclick="alert('Registration is not active yet. Please wait for the official launch.')">Registration Coming Soon</button>
+<button type="submit" id="submitBtn">SUBMIT REGISTRATION</button>
+
+<div id="message" role="status" aria-live="polite"></div>
 
 </form>
 </div>
@@ -111,6 +124,73 @@ This is a registration form preview. Do not submit real personal information yet
 <p>Email: kozyzmoren@gmail.com</p>
 <p>© 2027 MPOROKOSO MUSIC AWARDS</p>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://qexskbpmkvglgavziagl.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_t79SjLFUSnEYETCeC7h14w_MENglbGA";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+const form = document.getElementById("artistForm");
+const message = document.getElementById("message");
+const submitBtn = document.getElementById("submitBtn");
+
+form.addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "SUBMITTING...";
+  message.textContent = "Please wait...";
+
+  const formData = new FormData(form);
+
+  const artist = {
+    artist_name: formData.get("artist_name").trim(),
+    full_name: formData.get("full_name").trim(),
+    phone: formData.get("phone").trim(),
+    email: formData.get("email").trim(),
+    province: formData.get("province"),
+    genre: formData.get("genre"),
+    music_link: formData.get("music_link").trim() || null,
+    bio: formData.get("bio").trim() || null
+  };
+
+  try {
+    const { error } = await supabaseClient
+      .from("Artists _registration")
+      .insert([artist]);
+
+    if (error) {
+      throw error;
+    }
+
+    message.textContent =
+      "SUCCESS! Your artist registration has been received. Thank you!";
+    message.style.background = "#174d25";
+    message.style.color = "white";
+
+    form.reset();
+
+  } catch (error) {
+    console.error("Registration error:", error);
+
+    message.textContent =
+      "Registration failed. Please try again or contact the awards team.";
+    message.style.background = "#681b1b";
+    message.style.color = "white";
+
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "SUBMIT REGISTRATION";
+  }
+});
+</script>
 
 </body>
 </html>
